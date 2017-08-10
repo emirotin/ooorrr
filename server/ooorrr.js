@@ -14,7 +14,7 @@ const finishResponseIfNeeded = (res, context) => {
 
 const renderPlaceholder = (res, id) => {
   res.write(`
-    <script type="x-placeholder" data-ooorrr-placeholder="${id}"></script>
+    <span data-ooorrr-placeholder="${id}"></span>
   `)
 }
 
@@ -85,7 +85,7 @@ ooorrr.middleware = () => (req, res, next) => {
 
 ooorrr.runtime = `
   <style>
-    [data-ooorrr-replacement] {
+    [data-ooorrr-placeholder], [data-ooorrr-replacement] {
       display: none !important;
     }
   </style>
