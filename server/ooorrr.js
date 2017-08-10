@@ -8,7 +8,7 @@ const ooorrr = (strings, ...values) => {
 
 const finishResponseIfNeeded = (res, context) => {
   if (!context.pendingPromises) {
-    res.end()
+    res.end(context.lastString)
   }
 }
 
@@ -47,6 +47,7 @@ const renderValue = (res, value, context) => {
       context.pendingPromises -= 1
       finishResponseIfNeeded(res, context)
     })
+
     return
   }
 
@@ -65,10 +66,23 @@ const renderTemplate = (res, strings, values, context) => {
   finishResponseIfNeeded(res, context)
 }
 
-const buildContext = () => ({
-  lastChunkId: 0,
-  pendingPromises: 0
-})
+const buildContext = ({ strings, values }) => {
+  const l = values.length
+
+  if (values[l - 1] !== ooorrr.end) {
+    throw new Error('In the top-level template your last interpolated value MUST be `${ooorrr.end}`')
+  }
+
+  return [
+    strings.slice(0, l),
+    values.slice(0, l - 1),
+    {
+      lastChunkId: 0,
+      pendingPromises: 0,
+      lastString: strings[l]
+    }
+  ]
+}
 
 ooorrr.middleware = () => (req, res, next) => {
   res.ooorrr = (payload) => {
@@ -77,8 +91,13 @@ ooorrr.middleware = () => (req, res, next) => {
       res.status(500).send()
     }
 
-    const { strings, values } = payload
-    renderTemplate(res, strings, values, buildContext())
+    try {
+      const [ strings, values, context ] = buildContext(payload)
+      renderTemplate(res, strings, values, context)
+    } catch (e) {
+      console.error('Invalid ooorrr payload!', e)
+      res.status(500).send()
+    }
   }
   next()
 }
@@ -107,5 +126,7 @@ ooorrr.runtime = `
     };
   </script>
 `
+
+ooorrr.end = `___OOORRR_END___`
 
 export default ooorrr

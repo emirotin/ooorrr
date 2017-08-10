@@ -14,13 +14,11 @@ const page = () => {
   const p2 = Promise.delay(15000).thenReturn(`<strong>Delayed for 15s fragment here</strong>`)
 
   const p = Promise.delay(10000).thenReturn(ooorrr`
-    <p>
-      Delayed for 10s string here, but also:
-      <ul>
-        <li>${p1} (should be available instantly with the parent fragment)</li>
-        <li>${p2} (should be delayed)</li>
-      </ul>
-    </p>
+    <p>Delayed for 10s string here, but also:</p>
+    <ul>
+      <li>${p1} (should be available instantly with the parent fragment)</li>
+      <li>${p2} (should be delayed)</li>
+    </ul>
   `)
 
   return ooorrr`
@@ -35,6 +33,7 @@ const page = () => {
         ${q}
         <p>Plain numbers: 123${5}56</p>
         <p>Plain strings: hello, ${'world'}</p>
+        ${ooorrr.end}
       </body>
     </html>
   `
