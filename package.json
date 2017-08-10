@@ -4,24 +4,26 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "rimraf .build && webpack --config webpack.config.server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "webpack": "rimraf .build && webpack --config webpack.config.server.js",
+    "build": "NODE_ENV=production npm run webpack",
+    "dev": "NODE_ENV=development npm run webpack",
+    "start": "node .build/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.5.0",
+    "express": "^4.15.4"
+  },
+  "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-3": "^6.24.1",
-    "bluebird": "^3.5.0",
-    "express": "^4.15.4",
+    "rimraf": "^2.6.1",
     "start-server-webpack-plugin": "^2.2.0",
     "webpack": "^3.5.2",
     "webpack-node-externals": "^1.6.0"
-  },
-  "devDependencies": {
-    "rimraf": "^2.6.1"
   }
 }
